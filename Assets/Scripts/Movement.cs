@@ -4,12 +4,11 @@ using UnityEngine.UI;
 
 public class Movement : MonoBehaviour {
 
+	public GameObject probeta;
 	public float playerMovSpeed;// Velocidad de movimiento de la Cardboard.
-	public GameObject probetas;// La probeta del Canvas, se necesita aquí para poder llenarla.
 	public GameObject head; // La cabeza del jugador (Es el objeto llamado Head dentro de la Cardboard) se necesita para saber a donde está mirando la cardboard.
 	private bool playerWantsToMove;//un booleano que me permite saber si el usuario ha presionado el boton, cada que lo presiona cambia de estado.
 	private Vector3 playerMovDir; // El vector hacia donde está mirando la cardboard.
-	private bool llenar; // Un booleano para controlar si la probeta del canvas puede o no ser llenada (si está o no cerca del rio).
 	public GameObject acomodador; // un objeto que da el vector que necesitamos para acomodar la carboard frente a las probetas.
 	private bool enMinijuego; // un booleano que me permite saber si el jugador está o no dentro de un minijuego
 
@@ -19,7 +18,6 @@ public class Movement : MonoBehaviour {
 		//acomodar();
 		playerWantsToMove = false;
 		enMinijuego = false;
-		llenar = false;
 	}
 
 	//Cada frame se pregunta a unity si el usuario ha presionado el magneto de la Cardboard.
@@ -40,32 +38,16 @@ public class Movement : MonoBehaviour {
 		transform.Translate(playerMovDir*playerMovSpeed*Time.deltaTime);
 	}
 
-	//Para saber si la cardboard ha colisionado con un objeto cuyo colisionador sea de tipo Trigger (para la parte del rio)
-	void OnTriggerStay(Collider Other){		
-		//Si está colisionando con el rio y no tiene la probeta llena, entonces llene la probeta (el llenado se hace desde el otro Script).
-		if (Other.CompareTag ("Rio") && probetas.GetComponent<CtrlProbetas> ().miImagen.fillAmount < 1) {
-			llenar = true;
-			probetas.GetComponent<CtrlProbetas> ().puedeLlenar = llenar;
-			if (llenar) {
-				probetas.GetComponent<CtrlProbetas> ().rellenarImagen ();// Llamado a la función de llenado del otro Script.
-			}
-			//Aquí se pone todo en falso porque la función de llenado del otro script es recursiva (se llama a sí misma).
-			llenar = false;
-			probetas.GetComponent<CtrlProbetas> ().puedeLlenar = llenar;
-		} 
-		//Si no está llenando la probeta con agua sucia, entonces que la imagen de probeta deje de llenarse.
-		else {
-			llenar = false;
-			probetas.GetComponent<CtrlProbetas> ().puedeLlenar = llenar;
-		}
-	}
 
-	//Para la parte de los minijuegos
 	void OnTriggerEnter(Collider Other){
-		if (Other.CompareTag ("Probetas")&& probetas.GetComponent<CtrlProbetas>().getTerminoLlenado()==true) {
+		//Para la parte de los minijuegos
+		if (Other.CompareTag ("Probetas")) {
 			acomodar ();
 			enMinijuego = true;
-			probetas.GetComponent<CtrlProbetas>().setTerminoLlenado(true);
+		}
+		if (Other.CompareTag("Rio")) {
+			Renderer rend = probeta.GetComponent<Renderer>();
+			rend.material.SetColor("_Color", Color.gray);
 		}
 	}
 
