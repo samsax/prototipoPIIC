@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class Minijuego1 : MonoBehaviour {
+	
 	public Text texto;
 	private RaycastHit hit;
 	private Vector3 playerLookDir;
@@ -25,13 +26,14 @@ public class Minijuego1 : MonoBehaviour {
 		verde = 0.0f;
 		azul = 0.0f;
 		rend = probeta.GetComponent<Renderer>();
+		playerLookDir = new Vector3();
 	}
 
 	void Update () {
-		playerLookDir = new Vector3(head.transform.forward.x, head.transform.forward.y,head.transform.forward.z);
 		if (!terminado) {
-			Debug.DrawRay (transform.position, playerLookDir);
-			if (Physics.Raycast (transform.position, playerLookDir, out hit, 10.0f)) {
+			playerLookDir = new Vector3(head.transform.forward.x, head.transform.forward.y,head.transform.forward.z);
+			Debug.DrawRay (head.transform.position, playerLookDir);
+			if (Physics.Raycast (transform.position, playerLookDir, out hit, 5000.0f)) {
 				if (hit.collider.CompareTag("Rojo")) {
 					rojo = 1.0f;
 					saberRojo = true;
@@ -54,5 +56,8 @@ public class Minijuego1 : MonoBehaviour {
 				terminado = true;
 			}
 		}
+	}
+	public bool getTerminado(){
+		return terminado;
 	}
 }

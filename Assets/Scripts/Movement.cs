@@ -9,8 +9,9 @@ public class Movement : MonoBehaviour {
 	public GameObject head; // La cabeza del jugador (Es el objeto llamado Head dentro de la Cardboard) se necesita para saber a donde está mirando la cardboard.
 	private bool playerWantsToMove;//un booleano que me permite saber si el usuario ha presionado el boton, cada que lo presiona cambia de estado.
 	private Vector3 playerMovDir; // El vector hacia donde está mirando la cardboard.
-	public GameObject acomodador; // un objeto que da el vector que necesitamos para acomodar la carboard frente a las probetas.
 	private bool enMinijuego; // un booleano que me permite saber si el jugador está o no dentro de un minijuego
+	public Collider mesaColl;
+	public GameObject rioSucio;
 
 
 	void Start () {
@@ -22,7 +23,7 @@ public class Movement : MonoBehaviour {
 
 	//Cada frame se pregunta a unity si el usuario ha presionado el magneto de la Cardboard.
 	void Update () {
-		if (Cardboard.SDK.VRModeEnabled && Cardboard.SDK.Triggered && !enMinijuego) {
+		if (Cardboard.SDK.VRModeEnabled && Cardboard.SDK.Triggered) {
 			playerWantsToMove = !playerWantsToMove;
 		}
 		//En el momento en que esté true, la cardboard se moverá hasta que presionen de nuevo el magneto.
@@ -37,25 +38,26 @@ public class Movement : MonoBehaviour {
 		//Esta instrucción transalada la cardboard hacia donde le diga el vector. 
 		transform.Translate(playerMovDir*playerMovSpeed*Time.deltaTime);
 	}
-
-
+		
 	void OnTriggerEnter(Collider Other){
 		//Para la parte de los minijuegos
 		if (Other.CompareTag ("Probetas")) {
 			acomodar ();
 			enMinijuego = true;
 		}
-		if (Other.CompareTag("Rio")) {
+		if (Other.CompareTag("Rio")&&!enMinijuego) {
 			Renderer rend = probeta.GetComponent<Renderer>();
 			rend.material.SetColor("_Color", Color.gray);
 		}
+		if (Other.CompareTag("Rio")&&enMinijuego&&gameObject.GetComponent<Minijuego1>().getTerminado()) {
+			Destroy (rioSucio.gameObject);
+		}
 	}
 
-	void acomodar(){
-		transform.position = acomodador.transform.position;
-		transform.rotation = acomodador.transform.rotation;		
+	void acomodar(){	
 		playerWantsToMove = !playerWantsToMove;
 		gameObject.GetComponent<Minijuego1>().enabled=true;
+		mesaColl.enabled = false;
 	}
 
 }
