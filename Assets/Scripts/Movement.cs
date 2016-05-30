@@ -12,13 +12,17 @@ public class Movement : MonoBehaviour {
 	private bool enMinijuego; // un booleano que me permite saber si el jugador está o no dentro de un minijuego
 	public Collider mesaColl;
 	public GameObject rioSucio;
-
+	public GameObject form;
+	private bool formArriba;
+	public GameObject posicionador;
+	public float velForm=1.5f;
 
 	void Start () {
 		//Al principio el jugador no debe estar moviendose, ni cerca del rio y no está en un minijuego.
 		//acomodar();
 		playerWantsToMove = false;
 		enMinijuego = false;
+		formArriba = false;
 	}
 
 	//Cada frame se pregunta a unity si el usuario ha presionado el magneto de la Cardboard.
@@ -30,6 +34,22 @@ public class Movement : MonoBehaviour {
 		if (playerWantsToMove == true) {
 			movePlayer();
 		}
+		Debug.Log (head.transform.forward.y);
+		if (head.transform.forward.y<-0.5f&&!formArriba) {
+			subirForm ();
+		}else if (head.transform.forward.y>0.0f&&formArriba) {
+			bajarForm ();
+		}
+	}
+
+	public void subirForm(){
+		form.transform.Translate(Vector3.up*Time.deltaTime*velForm);
+		formArriba = true;
+	}
+
+	public void bajarForm(){
+		form.transform.position = posicionador.transform.position;
+		formArriba = false;
 	}
 
 	public void movePlayer(){
