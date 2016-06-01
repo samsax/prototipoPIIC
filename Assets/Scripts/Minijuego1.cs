@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class Minijuego1 : MonoBehaviour {
 	
-	public Text texto;
 	private RaycastHit hit;
 	private Vector3 playerLookDir;
 	public GameObject head;
@@ -52,8 +51,10 @@ public class Minijuego1 : MonoBehaviour {
 				}
 			}
 			if (saberAzul&&saberRojo&&saberVerde) {
-				texto.text="Lo has logrado";
 				terminado = true;
+				gameObject.GetComponent<Movement> ().dosChulos.SetActive(true);
+				gameObject.GetComponent<Movement> ().setChulos (2);
+				gameObject.GetComponent<Movement> ().unChulo.SetActive (false);
 			}
 		}
 	}

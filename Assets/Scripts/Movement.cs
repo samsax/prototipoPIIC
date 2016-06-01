@@ -14,8 +14,12 @@ public class Movement : MonoBehaviour {
 	public GameObject rioSucio;
 	public GameObject form;
 	private bool formArriba;
-	public GameObject posicionador;
-	public float velForm=1.5f;
+	public GameObject posicionadorAbajo;
+	public GameObject posicionadorArriba;	
+	public GameObject unChulo;
+	public GameObject dosChulos;
+	public GameObject tresChulos;
+	private int chulos;
 
 	void Start () {
 		//Al principio el jugador no debe estar moviendose, ni cerca del rio y no está en un minijuego.
@@ -23,6 +27,7 @@ public class Movement : MonoBehaviour {
 		playerWantsToMove = false;
 		enMinijuego = false;
 		formArriba = false;
+		chulos = 0;
 	}
 
 	//Cada frame se pregunta a unity si el usuario ha presionado el magneto de la Cardboard.
@@ -34,7 +39,6 @@ public class Movement : MonoBehaviour {
 		if (playerWantsToMove == true) {
 			movePlayer();
 		}
-		Debug.Log (head.transform.forward.y);
 		if (head.transform.forward.y<-0.5f&&!formArriba) {
 			subirForm ();
 		}else if (head.transform.forward.y>0.0f&&formArriba) {
@@ -43,12 +47,32 @@ public class Movement : MonoBehaviour {
 	}
 
 	public void subirForm(){
-		form.transform.Translate(Vector3.up*Time.deltaTime*velForm);
+		if (chulos==0) {
+			form.transform.position = posicionadorArriba.transform.position;
+		}else if (chulos==1) {
+			unChulo.transform.position = posicionadorArriba.transform.position;
+		}
+		else if (chulos==2) {
+			dosChulos.transform.position = posicionadorArriba.transform.position;
+		}
+		else if (chulos==3) {
+			tresChulos.transform.position = posicionadorArriba.transform.position;
+		}
 		formArriba = true;
 	}
 
 	public void bajarForm(){
-		form.transform.position = posicionador.transform.position;
+		if (chulos==0) {
+			form.transform.position = posicionadorAbajo.transform.position;
+		}else if (chulos==1) {
+			unChulo.transform.position = posicionadorAbajo.transform.position;
+		}
+		else if (chulos==2) {
+			dosChulos.transform.position = posicionadorAbajo.transform.position;
+		}
+		else if (chulos==3) {
+			tresChulos.transform.position = posicionadorAbajo.transform.position;
+		}
 		formArriba = false;
 	}
 
@@ -68,10 +92,25 @@ public class Movement : MonoBehaviour {
 		if (Other.CompareTag("Rio")&&!enMinijuego) {
 			Renderer rend = probeta.GetComponent<Renderer>();
 			rend.material.SetColor("_Color", Color.gray);
+			unChulo.SetActive (true);
+			chulos = 1;
+			form.SetActive (false);
 		}
 		if (Other.CompareTag("Rio")&&enMinijuego&&gameObject.GetComponent<Minijuego1>().getTerminado()) {
+			Debug.Log ("Hola");
+			tresChulos.SetActive (true);
+			dosChulos.SetActive (false);
+			chulos = 3;
 			Destroy (rioSucio.gameObject);
 		}
+	}
+
+	public int getChulos(){
+		return chulos;
+	}
+
+	public void setChulos(int c){
+		this.chulos = c;
 	}
 
 	void acomodar(){	
