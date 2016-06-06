@@ -31,7 +31,7 @@ public class Minijuego1 : MonoBehaviour {
 	void Update () {
 		if (!terminado) {
 			playerLookDir = new Vector3(head.transform.forward.x, head.transform.forward.y,head.transform.forward.z);
-			Debug.DrawRay (head.transform.position, playerLookDir);
+			Debug.DrawRay (probeta.transform.position, playerLookDir);
 			if (Physics.Raycast (transform.position, playerLookDir, out hit, 5000.0f)) {
 				if (hit.collider.CompareTag("Rojo")) {
 					rojo = 1.0f;
